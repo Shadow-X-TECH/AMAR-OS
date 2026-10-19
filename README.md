@@ -28,6 +28,6 @@ Hope, Did you like my OS , checking it out! And your Encouragement is my energy 
 4. ![My Website Screenshot](4.png)
 5. ![My Website Screenshot](5.png)
 6. ![My Website Screenshot](6.png)
-7. ![My Website Screenshot](7.png)
+
 
 
