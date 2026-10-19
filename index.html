@@ -1,0 +1,147 @@
+<html>
+<head>
+  <title>AMAR-OS</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+
+  <input type="checkbox" id="app-notepad" class="state-toggle">
+  <input type="checkbox" id="app-media" class="state-toggle">
+  <input type="checkbox" id="app-browser" class="state-toggle">
+  <input type="checkbox" id="app-trash" class="state-toggle">
+  <div id="desktop">
+    <label for="app-notepad" class="icon">📝 Notepad</label>
+    <label for="app-media" class="icon">🎵 Media</label>
+    <label for="app-browser" class="icon">🌐 Browser</label>
+    <label for="app-trash" class="icon">🗑️ Trash</label>
+    
+    <div class="window" id="window-notepad">
+      <div class="title-bar" onmousedown="dragWindow(event, 'window-notepad')">
+        <span>Notepad - AMAR-OS</span>
+        <label for="app-notepad" class="close-btn">✕</label>
+      </div>
+      <div class="content">
+        <textarea placeholder="Type notes in AMAR-OS..."></textarea>
+      </div>
+    </div>
+    <div class="window" id="window-media">
+      <div class="title-bar" onmousedown="dragWindow(event, 'window-media')">
+        <span>Media Player & Docs</span>
+        <label for="app-media" class="close-btn">✕</label>
+      </div>
+      <div class="content media-layout">
+        <div class="doc-preview">
+          <h4>📄 Track Info / Notes</h4>
+          <p>Now playing: AMAR-OS Ambient Lo-Fi. Enjoy your smooth web operating system experience!</p>
+        </div>
+        <div class="media-controls">
+          <button class="media-btn">▶ Play</button>
+          <button class="media-btn">⏸ Pause</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="window" id="window-browser">
+      <div class="title-bar" onmousedown="dragWindow(event, 'window-browser')">
+        <span>Web Browser - AMAR-OS</span>
+        <label for="app-browser" class="close-btn">✕</label>
+      </div>
+      <div class="content browser-content">
+        <div class="browser-nav">
+          <button class="nav-btn" onclick="reloadFrame()">🔄</button>
+          <input type="text" id="browser-url" value="https://start.duckduckgo.com" onkeydown="if(event.key==='Enter') navigateBrowser()">
+          <button class="nav-btn go-btn" onclick="navigateBrowser()">Go</button>
+          <button class="nav-btn" onclick="openExternal()" title="Open in New Tab">↗</button>
+        </div>
+        <div class="bookmarks">
+          <span onclick="setBookmark('https://start.duckduckgo.com')">🔍 DuckDuckGo</span>
+          <span onclick="setBookmark('https://www.bing.com')">🔎 Bing</span>
+          <span onclick="setBookmark('https://en.m.wikipedia.org')">📚 Wikipedia</span>
+        </div>
+        <iframe id="browser-frame" src="https://start.duckduckgo.com" class="browser-frame"></iframe>
+      </div>
+    </div>
+    <div class="window" id="window-trash" onclick="BringToFront(this)">
+      <div class="title-bar" onmousedown="dragWindow(event,'window-trash')">
+        <span>Recycle Bin</span>
+        <label for="app-trash" class="close-btn">x</label>
+      </div>
+      <div class="content files-content">
+        <p style="color: #8be9fd;font-size: 13px;">Trash is currently empty.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="taskbar">
+    <div class="start-btn">AMAR-OS</div>
+    <div class="taskbar-items">
+      <label for="app-notepad" class="task-item">📝 Notepad</label>
+      <label for="app-media" class="task-item">🎵 Media</label>
+      <label for="app-browser" class="task-item">🌐 Browser</label>
+    </div>
+    <div id="clock" style="margin-left: auto; font-size: 13px; font-weight: bold;">00:00</div>
+  </div>
+
+  <script>
+
+  function updateClock() {
+    const now = new Date ();
+    document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+  setInterval(updateClock, 1000);
+updateClock();
+
+    function dragWindow(e, winId) {
+      const win = document.getElementById(winId);
+      let startX = e.clientX - win.offsetLeft;
+      let startY = e.clientY - win.offsetTop;
+
+      function mouseMove(e) {
+        win.style.left = (e.clientX - startX) + 'px';
+        win.style.top = (e.clientY - startY) + 'px';
+      }
+
+      function mouseUp() {
+        window.removeEventListener('mousemove', mouseMove);
+        window.removeEventListener('mouseup', mouseUp);
+      }
+
+      window.addEventListener('mousemove', mouseMove);
+      window.addEventListener('mouseup', mouseUp);
+    }
+
+    function navigateBrowser() {
+      const urlInput = document.getElementById('browser-url').value.trim();
+      const frame = document.getElementById('browser-frame');
+      
+      let finalUrl = urlInput;
+      if (!urlInput.startsWith('http://') && !urlInput.startsWith('https://')) {
+        if (urlInput.includes('.')) {
+          finalUrl = 'https://' + urlInput;
+        } else {
+          finalUrl = 'https://start.duckduckgo.com/?q=' + encodeURIComponent(urlInput);
+        }
+      }
+      document.getElementById('browser-url').value = finalUrl;
+      frame.src = finalUrl;
+    }
+
+    function setBookmark(url) {
+      document.getElementById('browser-url').value = url;
+      document.getElementById('browser-frame').src = url;
+    }
+
+    function reloadFrame() {
+      const frame = document.getElementById('browser-frame');
+      frame.src = frame.src;
+    }
+
+    function openExternal() {
+      const url = document.getElementById('browser-url').value;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
